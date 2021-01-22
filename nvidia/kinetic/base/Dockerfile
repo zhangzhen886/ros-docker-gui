@@ -24,21 +24,23 @@ libssl-dev \
 dbus-x11 \
 vim \
 gedit \
+ttf-wqy-microhei ttf-wqy-zenhei \
 python3 python3-dev python3-pip \
 software-properties-common python-software-properties \
 gdb valgrind && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install cmake 3.15.5
-RUN git clone https://gitlab.kitware.com/cmake/cmake.git && \
-cd cmake && git checkout tags/v3.15.5 && ./bootstrap --parallel=8 && make -j8 && make install && \
+RUN git clone https://gitlab.kitware.com/cmake/cmake.git --branch v3.15.5 --depth 1 && \
+cd cmake && ./bootstrap --parallel=8 && make -j8 && make install && \
 cd .. && rm -rf cmake
 
 # Install tmux 3.1
 RUN apt-get update && apt-get install -y automake autoconf pkg-config libevent-dev libncurses5-dev bison && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/tmux/tmux.git && \
-cd tmux && git checkout tags/3.1 && ls -la && sh autogen.sh && ./configure && make -j8 && make install
+RUN git clone https://github.com/tmux/tmux.git --branch 3.1 --depth 1 && \
+cd tmux && ls -la && sh autogen.sh && ./configure && make -j8 && make install && \
+cd .. && rm -rf tmux
 
 # Install new paramiko (solves ssh issues)
 RUN apt-add-repository universe
@@ -68,7 +70,7 @@ RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /root/.oh
 RUN ln -s /root/.oh-my-zsh/custom/pure/pure.zsh-theme /root/.oh-my-zsh/custom/
 RUN ln -s /root/.oh-my-zsh/custom/pure/async.zsh /root/.oh-my-zsh/custom/
 RUN sed -i -e 's/robbyrussell/refined/g' /root/.zshrc
-RUN sed -i '/plugins=(/c\plugins=(git git-flow adb pyenv tmux)' /root/.zshrc
+RUN sed -i '/plugins=(/c\plugins=(git git-flow adb pyenv tmux zsh-autosuggestions zsh-syntax-highlighting)' /root/.zshrc
 
 # Terminator Config
 RUN mkdir -p /root/.config/terminator/
@@ -84,9 +86,10 @@ gstreamer1.0-tools libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstre
 ros-kinetic-desktop-full python-rosinstall python-rosinstall-generator python-wstool build-essential \
 ros-kinetic-socketcan-bridge \
 ros-kinetic-geodesy
+# apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configure ROS
-RUN rosdep init && rosdep update 
+# RUN rosdep init && rosdep update 
 RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc
 RUN echo "export ROSLAUNCH_SSH_UNKNOWN=1" >> /root/.bashrc
 RUN echo "source /opt/ros/kinetic/setup.zsh" >> /root/.zshrc
