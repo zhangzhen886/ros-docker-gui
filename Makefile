@@ -82,7 +82,7 @@ nvidia_ros_indigo_cuda10-1_cudnn7_opencv3: nvidia_ros_indigo_cuda10-1_cudnn7 ## 
 ## KINETIC
 
 nvidia_ros_kinetic: ## [NVIDIA] Build ROS  Kinetic Container
-	docker build -t turlucode/ros-kinetic:nvidia nvidia/kinetic/base
+	docker build -t turlucode/ros-kinetic:nvidia --network host nvidia/kinetic/base
 	@printf "\n\033[92mDocker Image: turlucode/ros-kinetic:nvidia\033[0m\n"
 
 nvidia_ros_kinetic_opencv3: nvidia_ros_kinetic ## [NVIDIA] Build ROS  Kinetic Container | ---------------------- | OpenCV 3.4.1
@@ -120,7 +120,7 @@ nvidia_ros_kinetic_cuda10_cudnn7_opencv3: nvidia_ros_kinetic_cuda10_cudnn7 ## [N
 ## MELODIC
 
 nvidia_ros_melodic: ## [NVIDIA] Build ROS  Melodic Container
-	docker build -t turlucode/ros-melodic:nvidia nvidia/melodic/base
+	docker build -t turlucode/ros-melodic:nvidia --network host nvidia/melodic/base
 	@printf "\n\033[92mDocker Image: turlucode/ros-melodic:nvidia\033[0m\n"
 
 nvidia_ros_melodic_cuda10: nvidia_ros_melodic ## [NVIDIA] Build ROS  Melodic Container | (CUDA 10   - no cuDNN)
