@@ -8,8 +8,7 @@ LABEL com.turlucode.ros.version="kinetic"
 ENV DEBIAN_FRONTEND noninteractive 
 
 # Install packages
-RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
-RUN apt-get clean
+RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list && apt-get clean
 RUN apt-get update && apt-get install -y \
 lsb-release \
 mesa-utils \
@@ -23,6 +22,8 @@ curl \
 htop \
 libssl-dev \
 dbus-x11 \
+vim \
+gedit \
 python3 python3-dev python3-pip \
 software-properties-common python-software-properties \
 gdb valgrind && \
@@ -62,6 +63,8 @@ RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -
 #RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
 RUN chsh -s /usr/bin/zsh root
 RUN git clone https://github.com/sindresorhus/pure /root/.oh-my-zsh/custom/pure
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions.git /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 RUN ln -s /root/.oh-my-zsh/custom/pure/pure.zsh-theme /root/.oh-my-zsh/custom/
 RUN ln -s /root/.oh-my-zsh/custom/pure/async.zsh /root/.oh-my-zsh/custom/
 RUN sed -i -e 's/robbyrussell/refined/g' /root/.zshrc
@@ -73,15 +76,14 @@ COPY assets/terminator_config /root/.config/terminator/config
 COPY assets/terminator_background.png /root/.config/terminator/background.png
 
 # Install ROS
-RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN sh -c 'echo "deb http://mirrors.ustc.edu.cn/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 RUN apt-get update && apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
 libpcap-dev \
 gstreamer1.0-tools libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-dev \
 ros-kinetic-desktop-full python-rosinstall python-rosinstall-generator python-wstool build-essential \
 ros-kinetic-socketcan-bridge \
-ros-kinetic-geodesy && \
-apt-get clean && rm -rf /var/lib/apt/lists/*
+ros-kinetic-geodesy
 
 # Configure ROS
 RUN rosdep init && rosdep update 
